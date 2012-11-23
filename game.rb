@@ -4,7 +4,7 @@ class Game < Chingu::Window
 
 	#Constructor
 	def initialize
-		super
+		super 800, 640
 		self.input = {esc: :exit}
 		@player = Player.create
 	end	
@@ -14,38 +14,41 @@ class Player < Chingu::GameObject
 
 	#meta.contructor
 	def setup
-		@x, @y, = 350, 400
+		@x, @y, @x_vel, @y_vel, @angle = 350, 400, 0, 0, 0
 		@image = Gosu::Image["alienblaster.png"]
 		self.input = {
 			holding_left: :left,
 			holding_right: :right,
-			holding_up: :up,
-			holding_down: :down
+			holding_up: :accelerate,
+			holding_down: :deccelerate,
+			holding_lshift: :thrust
 		}
+	
 	end
 
 		def left
-			unless @x - 28 <= 0
-				@x -= 3
-			end
+			@angle -= 7
 		end
 
 		def right
-			unless @x + 28 >= 800
-				@x += 3
-			end
+			@angle += 7
 		end
 
-		def up
-			unless @y - 28 <= 0
-			@y -=3
-			end
+		def accelerate
+			@x_vel += Gosu::offset_x(@angle, 0.5)
+			@y_vel += Gosu::offset_y(@angle, 0.5)
 		end
 
-		def down
-			unless @y + 28 >= 600
-		 	@y +=3
-		 	end
+		def deccelerate
+			@x_vel -= Gosu::offset_x(@angle, 0.5)
+			@y_vel -= Gosu::offset_y(@angle, 0.5)
+		end
+
+		def thrust
+			@x += @x_vel
+			@y += @y_vel
+			@x_vel *= 0.97
+			@y_vel *= 0.97
 		end
 end
 
