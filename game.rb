@@ -4,7 +4,8 @@ class Game < Chingu::Window
 
 	#Constructor
 	def initialize
-		super 800, 640
+		super 1366, 768
+		self.caption = "Vedyo Gaem"
 		self.input = {esc: :exit}
 		@player = Player.create
 	end	
@@ -21,10 +22,14 @@ class Player < Chingu::GameObject
 			holding_right: :right,
 			holding_up: :accelerate,
 			holding_down: :deccelerate,
-			holding_lshift: :thrust
+			q: :center
 		}
 	
 	end
+		def center
+			@x = 400
+			@y = 320
+		end
 
 		def left
 			@angle -= 7
@@ -37,6 +42,8 @@ class Player < Chingu::GameObject
 		def accelerate
 			@x_vel += Gosu::offset_x(@angle, 0.5)
 			@y_vel += Gosu::offset_y(@angle, 0.5)
+			@image = Gosu::Image['alienblasterthrust.png']
+
 		end
 
 		def deccelerate
@@ -49,6 +56,13 @@ class Player < Chingu::GameObject
 			@y += @y_vel
 			@x_vel *= 0.97
 			@y_vel *= 0.97
+			@x %= 1366
+			@y %= 768
+		end
+
+		def update
+			super 
+			thrust
 		end
 end
 
